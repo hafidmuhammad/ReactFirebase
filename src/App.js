@@ -1,24 +1,33 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect } from "react";
+import MainRoute from "./Route/MainRoute";
+import { Box } from "@chakra-ui/react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 function App() {
+
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    const auth = getAuth();
+    const unsub = onAuthStateChanged(auth, (prevUser) => {
+      console.log('status Login', prevUser)
+
+      // if (!prevUser && location.pathname !== "/register" && location.pathname !== '/forgetpassword' && location.pathname !== '/login/phone') {
+      //   navigate("/login");
+      // }
+
+    });
+    return () => unsub();
+  }, [navigate, location.pathname]);
+
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Box>
+      {/* <LoginPage /> */}
+      <MainRoute />
+    </Box>
   );
 }
 
